@@ -1,26 +1,19 @@
 export default class NumberSchema {
-  rules = null;
-
-  odd() {
-    this.rules = 'odd';
-    return this;
-  }
-
-  even() {
-    this.rules = 'even';
-    return this;
+  constructor(...validators) {
+    this.validators = validators;
   }
 
   isValid(value) {
-    if (typeof value !== 'number') {
-      return false;
-    }
-    if (this.rules === 'odd') {
-      return value % 2 === 1;
-    }
-    if (this.rules === 'even') {
-      return value % 2 === 0;
-    }
-    return true;
+    return this.validators.every((validator) => validator(value));
+  }
+
+  odd() {
+    const validator = (value) => value % 2 === 1;
+    return new NumberSchema(...this.validators, validator);
+  }
+
+  even() {
+    const validator = (value) => value % 2 === 0;
+    return new NumberSchema(...this.validators, validator);
   }
 }

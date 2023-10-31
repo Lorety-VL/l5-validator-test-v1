@@ -1,20 +1,18 @@
 export default class ObjectSchema {
-  localSchema = null;
-
+  constructor(schema) {
+    this.schema = schema;
+  }
+  // eslint-disable-next-line
   shape(obj) {
-    this.localSchema = obj;
-    return this;
+    return new ObjectSchema(obj);
   }
 
-  isValid(toValidate) {
-    const schemeKeys = Object.keys(this.localSchema);
-    const objKeys = Object.keys(toValidate);
-    if (schemeKeys.length !== objKeys.length) {
+  isValid(value) {
+    const keys = Object.keys(value);
+    const keys2 = Object.keys(this.schema);
+    if (keys.length !== keys2.length) {
       return false;
     }
-    return schemeKeys.every((key) => {
-      const code = this.localSchema[key];
-      return code.isValid(toValidate[key]);
-    });
+    return keys.every((key) => this.schema[key].isValid(value[key]));
   }
 }

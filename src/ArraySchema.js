@@ -1,18 +1,14 @@
 export default class ArraySchema {
-  len = null;
-
-  length(newLen) {
-    this.len = newLen;
-    return this;
+  constructor(...validators) {
+    this.validators = validators;
   }
 
   isValid(value) {
-    if (!Array.isArray(value)) {
-      return false;
-    }
-    if (this.len) {
-      return this.len === value.length;
-    }
-    return true;
+    return this.validators.every((validator) => validator(value));
+  }
+
+  length(len) {
+    const validator = (value) => value.length === len;
+    return new ArraySchema(...this.validators, validator);
   }
 }
